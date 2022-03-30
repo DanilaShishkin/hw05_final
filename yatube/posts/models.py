@@ -23,8 +23,6 @@ class Post(models.Model):
         related_name='posts',
         blank=True,
         null=True,
-        # verbose_name='Группа',
-        # help_text='Выберите группу'
     )
     author = models.ForeignKey(
         User,
@@ -40,8 +38,6 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
-        # verbose_name = 'Пост'
-        # verbose_name_plural = 'Посты'
 
     def __str__(self):
         # выводим текст поста
@@ -78,3 +74,6 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following'
     )
+
+    class Meta:
+        constraints = ['author']

@@ -125,13 +125,19 @@ class PostCreateFormTests(TestCase):
         """Комментировать посты может только авторизованный пользователь"""
         form = CommentForm(data={'text': 'some comment'})
         # Отправляем POST-запрос
-        self.guest_client.post(
+        response = self.guest_client.post(
             reverse('posts:add_comment', args=[self.post.pk]),
             data=form.data,
             follow=True
         )
         # Проверяем наличие комментария
         self.assertIsNone(self.post.comments.first())
+        # Проверяем, сработал ли редирект
+        reverse_1 = reverse('users:login')
+        reverse_2 = reverse('posts:add_comment',
+                            kwargs={'post_id': self.post.pk})
+        reverse_sum = f'{reverse_1}?next={reverse_2}'
+        self.assertRedirects(response, reverse_sum)
 
     def test_edit_post(self):
         """Валидная форма редактирует запись."""

@@ -1,5 +1,3 @@
-# from xml.etree.ElementTree import Comment
-# from cgitb import text
 from django import forms
 from django.urls import reverse_lazy
 
