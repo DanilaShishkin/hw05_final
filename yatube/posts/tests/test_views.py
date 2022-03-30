@@ -371,12 +371,13 @@ class FollowViewTest(TestCase):
             args=[self.author])
         )
         self.assertEqual(Follow.objects.count(), follow_count + 1)
-        self.assertTrue(
-            Follow.objects.filter(
-                user=self.user,
-                author=self.author
-            ).exists()
-        )
+        fields_test = {
+            self.follow.user: self.user,
+            self.follow.author: self.post.author,
+        }
+        for field, expect in fields_test.items():
+            with self.subTest(field=field):
+                self.assertEqual(field, expect)
 
     def test_unfollow(self):
         """Проверяем отписку"""
@@ -398,26 +399,12 @@ class FollowViewTest(TestCase):
 
     def test_post_on_follow(self):
         """Проверяем запись в лентах у подписчиков"""
-        post = Post.objects.create(
-            text='Тестовый текст для подписчика',
-            author=self.author_2
-        )
-        self.authorized_client.post(
-            reverse('posts:profile_follow', args=[self.author]),
-        )
         follow_subscriber = self.authorized_client.get(
             reverse('posts:follow_index')).context.get('page_obj').object_list
-        self.assertIn(post, follow_subscriber)
+        self.assertIn(self.post, follow_subscriber)
 
     def test_post_on_unfollow(self):
         """Проверяем отсутствие записи в лентах у не подписчиков"""
-        post = Post.objects.create(
-            text='Тестовый текст для подписчика',
-            author=self.author_2
-        )
-        self.authorized_client.post(
-            reverse('posts:profile_follow', args=[self.author]),
-        )
         follow_not_subscriber = self.authorized_client_2.get(
             reverse('posts:follow_index')).context.get('page_obj').object_list
-        self.assertNotIn(post, follow_not_subscriber)
+        self.assertNotIn(self.post, follow_not_subscriber)
