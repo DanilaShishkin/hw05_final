@@ -399,12 +399,20 @@ class FollowViewTest(TestCase):
 
     def test_post_on_follow(self):
         """Проверяем запись в лентах у подписчиков"""
+        post = Post.objects.create(
+            text='Тестовый для подписчика',
+            author=self.author_2
+        )
         follow_subscriber = self.authorized_client.get(
             reverse('posts:follow_index')).context.get('page_obj').object_list
-        self.assertIn(self.post, follow_subscriber)
+        self.assertIn(post, follow_subscriber)
 
     def test_post_on_unfollow(self):
         """Проверяем отсутствие записи в лентах у не подписчиков"""
+        post = Post.objects.create(
+            text='Тестовый для не подписчика',
+            author=self.author_2
+        )
         follow_not_subscriber = self.authorized_client_2.get(
             reverse('posts:follow_index')).context.get('page_obj').object_list
-        self.assertNotIn(self.post, follow_not_subscriber)
+        self.assertNotIn(post, follow_not_subscriber)
