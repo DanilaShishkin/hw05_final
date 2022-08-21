@@ -32,6 +32,12 @@ python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+Перейти в директорию приложения проекта:
+
+```
+cd yatube
+```
+
 Выполнить миграции:
 
 ```
